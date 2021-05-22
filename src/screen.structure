@@ -1,0 +1,13 @@
+- Layout
+    - Header
+        - Home Screen
+            - SearchBar
+                - Search By Title
+                - Search By Body
+                - Search By Status
+            - Card View for the results
+        - Issue Screen
+            - Back to the Home Page
+            - view a single issue
+            - All Comments
+    - Footer

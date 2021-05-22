@@ -1,0 +1,40 @@
+enum IssueState {
+  Open
+  Closed
+}
+query GetRepository(
+  $owner: String!
+  $name: String!
+  $first: Int
+  $last: Int
+  $states: [IssueState!]
+) {
+  repository(owner: $owner, name: $name) {
+    id
+    nameWithOwner
+    description
+    url
+    issues(states: $states, first: $first, last: $last) {
+      edges {
+        node {
+          ...Issue
+        }
+      }
+    }
+  }
+}
+
+fragment Issue on Issue {
+  title
+  comments(first: $first) {
+    totalCount
+    edges {
+      node {
+        author {
+          login
+        }
+        createdAt
+      }
+    }
+  }
+}

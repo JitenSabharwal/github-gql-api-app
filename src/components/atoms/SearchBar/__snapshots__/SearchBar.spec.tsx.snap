@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SearchBar Should render the initial layout 1`] = `
+Array [
+  <styled.div>
+    <InputGroup
+      tag="div"
+    >
+      <InputGroupButtonDropdown
+        addonType="append"
+        isOpen={false}
+        toggle={[Function]}
+      >
+        <DropdownToggle
+          aria-haspopup={true}
+          caret={true}
+          color="secondary"
+        >
+          Issue: 
+          Open
+        </DropdownToggle>
+        <DropdownMenu
+          flip={true}
+          tag="div"
+        >
+          <DropdownItem
+            header={true}
+            tag="button"
+            toggle={true}
+          >
+            Issue Status
+          </DropdownItem>
+          <DropdownItem
+            onClick={[Function]}
+            tag="button"
+            toggle={true}
+          >
+            Open
+          </DropdownItem>
+          <DropdownItem
+            divider={true}
+            tag="button"
+            toggle={true}
+          />
+          <DropdownItem
+            onClick={[Function]}
+            tag="button"
+            toggle={true}
+          >
+            Closed
+          </DropdownItem>
+        </DropdownMenu>
+      </InputGroupButtonDropdown>
+      <Input
+        onChange={[Function]}
+        type="text"
+      />
+    </InputGroup>
+  </styled.div>,
+]
+`;

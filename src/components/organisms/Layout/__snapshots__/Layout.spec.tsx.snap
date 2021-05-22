@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Layout Should render initial layout 1`] = `
+Array [
+  <styled.div>
+    <Header
+      heading="GitHub Issue Search"
+      onBackClick={[Function]}
+    />
+    <styled.div>
+      <div />
+    </styled.div>
+  </styled.div>,
+]
+`;
+
+exports[`Layout Should render initial layout without back button 1`] = `
+Array [
+  <styled.div>
+    <Header
+      heading="GitHub Issue Search"
+    />
+    <styled.div>
+      <div />
+    </styled.div>
+  </styled.div>,
+]
+`;

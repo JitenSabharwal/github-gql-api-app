@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TotalCount Should render the layout 1`] = `
+Array [
+  <styled.div>
+    <styled.span>
+      Total number of found issues
+    </styled.span>
+    <styled.span>
+      100
+    </styled.span>
+  </styled.div>,
+]
+`;

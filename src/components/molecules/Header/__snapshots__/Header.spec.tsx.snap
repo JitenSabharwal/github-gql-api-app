@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Header Should render initial layout 1`] = `
+Array [
+  <styled.header>
+    <styled.div>
+      Heading
+    </styled.div>
+  </styled.header>,
+]
+`;
+
+exports[`Header Should render initial layout with back button 1`] = `
+Array [
+  <styled.header>
+    <React.Fragment>
+      <styled.div
+        onClick={[Function]}
+      >
+        <Icon
+          icon="logo.svg"
+        />
+        <styled.span>
+          Back to Search
+        </styled.span>
+      </styled.div>
+    </React.Fragment>
+    <styled.div>
+      Heading
+    </styled.div>
+  </styled.header>,
+]
+`;
