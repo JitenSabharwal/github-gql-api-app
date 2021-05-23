@@ -1,7 +1,7 @@
 overwrite: true
 schema: "https://api.github.com/graphql"
 headers:
-  Authorization: "Bearer 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"
+  Authorization: "Bearer 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"
 documents: "src/**/*.graphql"
 generates:
   src/generated/graphql.tsx:

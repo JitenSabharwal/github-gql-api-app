@@ -16428,6 +16428,10 @@ export type SponsorshipConnection = {
   pageInfo: PageInfo;
   /** Identifies the total count of items in the connection. */
   totalCount: Scalars['Int'];
+  /** The total amount in cents of all recurring sponsorships in the connection whose amount you can view. Does not include one-time sponsorships. */
+  totalRecurringMonthlyPriceInCents: Scalars['Int'];
+  /** The total dollar amount of all recurring sponsorships in the connection whose amount you can view. Does not include one-time sponsorships. */
+  totalRecurringMonthlyPriceInDollars: Scalars['Int'];
 };
 
 /** An edge in a connection. */
@@ -19699,6 +19703,7 @@ export type GetRepositoryQueryVariables = Exact<{
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
   states?: Maybe<Array<IssueState> | IssueState>;
+  commentCount?: Maybe<Scalars['Int']>;
 }>;
 
 
@@ -19755,7 +19760,7 @@ export type IssueFragment = (
 export const IssueFragmentDoc = gql`
     fragment Issue on Issue {
   title
-  comments(first: $first) {
+  comments(first: $commentCount) {
     totalCount
     edges {
       node {
@@ -19769,7 +19774,7 @@ export const IssueFragmentDoc = gql`
 }
     `;
 export const GetRepositoryDocument = gql`
-    query GetRepository($owner: String!, $name: String!, $first: Int, $last: Int, $states: [IssueState!]) {
+    query GetRepository($owner: String!, $name: String!, $first: Int, $last: Int, $states: [IssueState!], $commentCount: Int) {
   repository(owner: $owner, name: $name) {
     id
     nameWithOwner
@@ -19803,6 +19808,7 @@ export const GetRepositoryDocument = gql`
  *      first: // value for 'first'
  *      last: // value for 'last'
  *      states: // value for 'states'
+ *      commentCount: // value for 'commentCount'
  *   },
  * });
  */

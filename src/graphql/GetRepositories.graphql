@@ -8,6 +8,7 @@ query GetRepository(
   $first: Int
   $last: Int
   $states: [IssueState!]
+  $commentCount: Int
 ) {
   repository(owner: $owner, name: $name) {
     id
@@ -19,21 +20,6 @@ query GetRepository(
         node {
           ...Issue
         }
-      }
-    }
-  }
-}
-
-fragment Issue on Issue {
-  title
-  comments(first: $first) {
-    totalCount
-    edges {
-      node {
-        author {
-          login
-        }
-        createdAt
       }
     }
   }

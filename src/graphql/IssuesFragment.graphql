@@ -1,0 +1,14 @@
+fragment Issue on Issue {
+  title
+  comments(first: $commentCount) {
+    totalCount
+    edges {
+      node {
+        author {
+          login
+        }
+        createdAt
+      }
+    }
+  }
+}

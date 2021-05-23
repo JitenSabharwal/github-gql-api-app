@@ -33,7 +33,6 @@ const Description = styled.div`
   line-height: 1.5em;
   height: 3em;
   overflow: hidden;
-  white-space: nowrap;
   text-overflow: ellipsis;
   width: 100%;
 `
