@@ -19697,13 +19697,33 @@ export type ViewerHovercardContext = HovercardContext & {
 };
 
 
+export type GetIssueQueryVariables = Exact<{
+  owner: Scalars['String'];
+  name: Scalars['String'];
+  issueNumber: Scalars['Int'];
+  afterComment?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetIssueQuery = (
+  { __typename?: 'Query' }
+  & { repository?: Maybe<(
+    { __typename?: 'Repository' }
+    & { issue?: Maybe<(
+      { __typename?: 'Issue' }
+      & IssueFragment
+    )> }
+  )> }
+);
+
 export type GetRepositoryQueryVariables = Exact<{
   owner: Scalars['String'];
   name: Scalars['String'];
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
+  after?: Maybe<Scalars['String']>;
+  before?: Maybe<Scalars['String']>;
   states?: Maybe<Array<IssueState> | IssueState>;
-  commentCount?: Maybe<Scalars['Int']>;
 }>;
 
 
@@ -19714,82 +19734,382 @@ export type GetRepositoryQuery = (
     & Pick<Repository, 'id' | 'nameWithOwner' | 'description' | 'url'>
     & { issues: (
       { __typename?: 'IssueConnection' }
-      & { edges?: Maybe<Array<Maybe<(
+      & Pick<IssueConnection, 'totalCount'>
+      & { pageInfo: (
+        { __typename?: 'PageInfo' }
+        & Pick<PageInfo, 'hasNextPage' | 'startCursor' | 'endCursor'>
+      ), edges?: Maybe<Array<Maybe<(
         { __typename?: 'IssueEdge' }
         & { node?: Maybe<(
           { __typename?: 'Issue' }
-          & IssueFragment
+          & IssueWithCommentsCountFragment
         )> }
       )>>> }
     ) }
   )> }
 );
 
-export type IssueFragment = (
+export type BasicIssueDetailFragment = (
   { __typename?: 'Issue' }
-  & Pick<Issue, 'title'>
+  & Pick<Issue, 'id' | 'title' | 'body' | 'state'>
+);
+
+export type IssueWithCommentsCountFragment = (
+  { __typename?: 'Issue' }
   & { comments: (
     { __typename?: 'IssueCommentConnection' }
     & Pick<IssueCommentConnection, 'totalCount'>
-    & { edges?: Maybe<Array<Maybe<(
+  ) }
+  & BasicIssueDetailFragment
+);
+
+type Comment_CommitComment_Fragment = (
+  { __typename?: 'CommitComment' }
+  & Pick<CommitComment, 'bodyText' | 'createdAt' | 'updatedAt'>
+  & { author?: Maybe<(
+    { __typename?: 'Bot' }
+    & Pick<Bot, 'login'>
+  ) | (
+    { __typename?: 'EnterpriseUserAccount' }
+    & Pick<EnterpriseUserAccount, 'login'>
+  ) | (
+    { __typename?: 'Mannequin' }
+    & Pick<Mannequin, 'login'>
+  ) | (
+    { __typename?: 'Organization' }
+    & Pick<Organization, 'login'>
+  ) | (
+    { __typename?: 'User' }
+    & Pick<User, 'login'>
+  )> }
+);
+
+type Comment_GistComment_Fragment = (
+  { __typename?: 'GistComment' }
+  & Pick<GistComment, 'bodyText' | 'createdAt' | 'updatedAt'>
+  & { author?: Maybe<(
+    { __typename?: 'Bot' }
+    & Pick<Bot, 'login'>
+  ) | (
+    { __typename?: 'EnterpriseUserAccount' }
+    & Pick<EnterpriseUserAccount, 'login'>
+  ) | (
+    { __typename?: 'Mannequin' }
+    & Pick<Mannequin, 'login'>
+  ) | (
+    { __typename?: 'Organization' }
+    & Pick<Organization, 'login'>
+  ) | (
+    { __typename?: 'User' }
+    & Pick<User, 'login'>
+  )> }
+);
+
+type Comment_Issue_Fragment = (
+  { __typename?: 'Issue' }
+  & Pick<Issue, 'bodyText' | 'createdAt' | 'updatedAt'>
+  & { author?: Maybe<(
+    { __typename?: 'Bot' }
+    & Pick<Bot, 'login'>
+  ) | (
+    { __typename?: 'EnterpriseUserAccount' }
+    & Pick<EnterpriseUserAccount, 'login'>
+  ) | (
+    { __typename?: 'Mannequin' }
+    & Pick<Mannequin, 'login'>
+  ) | (
+    { __typename?: 'Organization' }
+    & Pick<Organization, 'login'>
+  ) | (
+    { __typename?: 'User' }
+    & Pick<User, 'login'>
+  )> }
+);
+
+type Comment_IssueComment_Fragment = (
+  { __typename?: 'IssueComment' }
+  & Pick<IssueComment, 'bodyText' | 'createdAt' | 'updatedAt'>
+  & { author?: Maybe<(
+    { __typename?: 'Bot' }
+    & Pick<Bot, 'login'>
+  ) | (
+    { __typename?: 'EnterpriseUserAccount' }
+    & Pick<EnterpriseUserAccount, 'login'>
+  ) | (
+    { __typename?: 'Mannequin' }
+    & Pick<Mannequin, 'login'>
+  ) | (
+    { __typename?: 'Organization' }
+    & Pick<Organization, 'login'>
+  ) | (
+    { __typename?: 'User' }
+    & Pick<User, 'login'>
+  )> }
+);
+
+type Comment_PullRequest_Fragment = (
+  { __typename?: 'PullRequest' }
+  & Pick<PullRequest, 'bodyText' | 'createdAt' | 'updatedAt'>
+  & { author?: Maybe<(
+    { __typename?: 'Bot' }
+    & Pick<Bot, 'login'>
+  ) | (
+    { __typename?: 'EnterpriseUserAccount' }
+    & Pick<EnterpriseUserAccount, 'login'>
+  ) | (
+    { __typename?: 'Mannequin' }
+    & Pick<Mannequin, 'login'>
+  ) | (
+    { __typename?: 'Organization' }
+    & Pick<Organization, 'login'>
+  ) | (
+    { __typename?: 'User' }
+    & Pick<User, 'login'>
+  )> }
+);
+
+type Comment_PullRequestReview_Fragment = (
+  { __typename?: 'PullRequestReview' }
+  & Pick<PullRequestReview, 'bodyText' | 'createdAt' | 'updatedAt'>
+  & { author?: Maybe<(
+    { __typename?: 'Bot' }
+    & Pick<Bot, 'login'>
+  ) | (
+    { __typename?: 'EnterpriseUserAccount' }
+    & Pick<EnterpriseUserAccount, 'login'>
+  ) | (
+    { __typename?: 'Mannequin' }
+    & Pick<Mannequin, 'login'>
+  ) | (
+    { __typename?: 'Organization' }
+    & Pick<Organization, 'login'>
+  ) | (
+    { __typename?: 'User' }
+    & Pick<User, 'login'>
+  )> }
+);
+
+type Comment_PullRequestReviewComment_Fragment = (
+  { __typename?: 'PullRequestReviewComment' }
+  & Pick<PullRequestReviewComment, 'bodyText' | 'createdAt' | 'updatedAt'>
+  & { author?: Maybe<(
+    { __typename?: 'Bot' }
+    & Pick<Bot, 'login'>
+  ) | (
+    { __typename?: 'EnterpriseUserAccount' }
+    & Pick<EnterpriseUserAccount, 'login'>
+  ) | (
+    { __typename?: 'Mannequin' }
+    & Pick<Mannequin, 'login'>
+  ) | (
+    { __typename?: 'Organization' }
+    & Pick<Organization, 'login'>
+  ) | (
+    { __typename?: 'User' }
+    & Pick<User, 'login'>
+  )> }
+);
+
+type Comment_TeamDiscussion_Fragment = (
+  { __typename?: 'TeamDiscussion' }
+  & Pick<TeamDiscussion, 'bodyText' | 'createdAt' | 'updatedAt'>
+  & { author?: Maybe<(
+    { __typename?: 'Bot' }
+    & Pick<Bot, 'login'>
+  ) | (
+    { __typename?: 'EnterpriseUserAccount' }
+    & Pick<EnterpriseUserAccount, 'login'>
+  ) | (
+    { __typename?: 'Mannequin' }
+    & Pick<Mannequin, 'login'>
+  ) | (
+    { __typename?: 'Organization' }
+    & Pick<Organization, 'login'>
+  ) | (
+    { __typename?: 'User' }
+    & Pick<User, 'login'>
+  )> }
+);
+
+type Comment_TeamDiscussionComment_Fragment = (
+  { __typename?: 'TeamDiscussionComment' }
+  & Pick<TeamDiscussionComment, 'bodyText' | 'createdAt' | 'updatedAt'>
+  & { author?: Maybe<(
+    { __typename?: 'Bot' }
+    & Pick<Bot, 'login'>
+  ) | (
+    { __typename?: 'EnterpriseUserAccount' }
+    & Pick<EnterpriseUserAccount, 'login'>
+  ) | (
+    { __typename?: 'Mannequin' }
+    & Pick<Mannequin, 'login'>
+  ) | (
+    { __typename?: 'Organization' }
+    & Pick<Organization, 'login'>
+  ) | (
+    { __typename?: 'User' }
+    & Pick<User, 'login'>
+  )> }
+);
+
+export type CommentFragment = Comment_CommitComment_Fragment | Comment_GistComment_Fragment | Comment_Issue_Fragment | Comment_IssueComment_Fragment | Comment_PullRequest_Fragment | Comment_PullRequestReview_Fragment | Comment_PullRequestReviewComment_Fragment | Comment_TeamDiscussion_Fragment | Comment_TeamDiscussionComment_Fragment;
+
+export type IssueFragment = (
+  { __typename?: 'Issue' }
+  & { comments: (
+    { __typename?: 'IssueCommentConnection' }
+    & Pick<IssueCommentConnection, 'totalCount'>
+    & { pageInfo: (
+      { __typename?: 'PageInfo' }
+      & Pick<PageInfo, 'endCursor' | 'hasNextPage' | 'hasPreviousPage'>
+    ), edges?: Maybe<Array<Maybe<(
       { __typename?: 'IssueCommentEdge' }
       & { node?: Maybe<(
         { __typename?: 'IssueComment' }
-        & Pick<IssueComment, 'createdAt'>
-        & { author?: Maybe<(
-          { __typename?: 'Bot' }
-          & Pick<Bot, 'login'>
-        ) | (
-          { __typename?: 'EnterpriseUserAccount' }
-          & Pick<EnterpriseUserAccount, 'login'>
-        ) | (
-          { __typename?: 'Mannequin' }
-          & Pick<Mannequin, 'login'>
-        ) | (
-          { __typename?: 'Organization' }
-          & Pick<Organization, 'login'>
-        ) | (
-          { __typename?: 'User' }
-          & Pick<User, 'login'>
-        )> }
+        & Comment_IssueComment_Fragment
       )> }
+    )>>> }
+  ) }
+  & BasicIssueDetailFragment
+);
+
+export type SearchIssueQueryVariables = Exact<{
+  query: Scalars['String'];
+}>;
+
+
+export type SearchIssueQuery = (
+  { __typename?: 'Query' }
+  & { search: (
+    { __typename?: 'SearchResultItemConnection' }
+    & Pick<SearchResultItemConnection, 'issueCount'>
+    & { edges?: Maybe<Array<Maybe<(
+      { __typename?: 'SearchResultItemEdge' }
+      & { node?: Maybe<{ __typename: 'App' } | (
+        { __typename: 'Issue' }
+        & IssueWithCommentsCountFragment
+      ) | { __typename: 'MarketplaceListing' } | { __typename: 'Organization' } | { __typename: 'PullRequest' } | { __typename: 'Repository' } | { __typename: 'User' }>, textMatches?: Maybe<Array<Maybe<(
+        { __typename?: 'TextMatch' }
+        & Pick<TextMatch, 'property'>
+      )>>> }
     )>>> }
   ) }
 );
 
+export const BasicIssueDetailFragmentDoc = gql`
+    fragment BasicIssueDetail on Issue {
+  id
+  title
+  body
+  state
+}
+    `;
+export const IssueWithCommentsCountFragmentDoc = gql`
+    fragment IssueWithCommentsCount on Issue {
+  ...BasicIssueDetail
+  comments(first: 10) {
+    totalCount
+  }
+}
+    ${BasicIssueDetailFragmentDoc}`;
+export const CommentFragmentDoc = gql`
+    fragment Comment on Comment {
+  bodyText
+  author {
+    login
+  }
+  createdAt
+  updatedAt
+}
+    `;
 export const IssueFragmentDoc = gql`
     fragment Issue on Issue {
-  title
-  comments(first: $commentCount) {
+  ...BasicIssueDetail
+  comments(after: $afterComment, first: 50) {
     totalCount
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
     edges {
       node {
-        author {
-          login
-        }
-        createdAt
+        ...Comment
       }
     }
   }
 }
-    `;
+    ${BasicIssueDetailFragmentDoc}
+${CommentFragmentDoc}`;
+export const GetIssueDocument = gql`
+    query GetIssue($owner: String!, $name: String!, $issueNumber: Int!, $afterComment: String) {
+  repository(owner: $owner, name: $name) {
+    issue(number: $issueNumber) {
+      ...Issue
+    }
+  }
+}
+    ${IssueFragmentDoc}`;
+
+/**
+ * __useGetIssueQuery__
+ *
+ * To run a query within a React component, call `useGetIssueQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetIssueQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetIssueQuery({
+ *   variables: {
+ *      owner: // value for 'owner'
+ *      name: // value for 'name'
+ *      issueNumber: // value for 'issueNumber'
+ *      afterComment: // value for 'afterComment'
+ *   },
+ * });
+ */
+export function useGetIssueQuery(baseOptions: Apollo.QueryHookOptions<GetIssueQuery, GetIssueQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetIssueQuery, GetIssueQueryVariables>(GetIssueDocument, options);
+      }
+export function useGetIssueLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetIssueQuery, GetIssueQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetIssueQuery, GetIssueQueryVariables>(GetIssueDocument, options);
+        }
+export type GetIssueQueryHookResult = ReturnType<typeof useGetIssueQuery>;
+export type GetIssueLazyQueryHookResult = ReturnType<typeof useGetIssueLazyQuery>;
+export type GetIssueQueryResult = Apollo.QueryResult<GetIssueQuery, GetIssueQueryVariables>;
 export const GetRepositoryDocument = gql`
-    query GetRepository($owner: String!, $name: String!, $first: Int, $last: Int, $states: [IssueState!], $commentCount: Int) {
+    query GetRepository($owner: String!, $name: String!, $first: Int, $last: Int, $after: String, $before: String, $states: [IssueState!]) {
   repository(owner: $owner, name: $name) {
     id
     nameWithOwner
     description
     url
-    issues(states: $states, first: $first, last: $last) {
+    issues(
+      states: $states
+      first: $first
+      last: $last
+      after: $after
+      before: $before
+    ) {
+      totalCount
+      pageInfo {
+        hasNextPage
+        startCursor
+        endCursor
+      }
       edges {
         node {
-          ...Issue
+          ...IssueWithCommentsCount
         }
       }
     }
   }
 }
-    ${IssueFragmentDoc}`;
+    ${IssueWithCommentsCountFragmentDoc}`;
 
 /**
  * __useGetRepositoryQuery__
@@ -19807,8 +20127,9 @@ export const GetRepositoryDocument = gql`
  *      name: // value for 'name'
  *      first: // value for 'first'
  *      last: // value for 'last'
+ *      after: // value for 'after'
+ *      before: // value for 'before'
  *      states: // value for 'states'
- *      commentCount: // value for 'commentCount'
  *   },
  * });
  */
@@ -19823,3 +20144,47 @@ export function useGetRepositoryLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type GetRepositoryQueryHookResult = ReturnType<typeof useGetRepositoryQuery>;
 export type GetRepositoryLazyQueryHookResult = ReturnType<typeof useGetRepositoryLazyQuery>;
 export type GetRepositoryQueryResult = Apollo.QueryResult<GetRepositoryQuery, GetRepositoryQueryVariables>;
+export const SearchIssueDocument = gql`
+    query SearchIssue($query: String!) {
+  search(query: $query, type: ISSUE) {
+    issueCount
+    edges {
+      node {
+        __typename
+        ...IssueWithCommentsCount
+      }
+      textMatches {
+        property
+      }
+    }
+  }
+}
+    ${IssueWithCommentsCountFragmentDoc}`;
+
+/**
+ * __useSearchIssueQuery__
+ *
+ * To run a query within a React component, call `useSearchIssueQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchIssueQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchIssueQuery({
+ *   variables: {
+ *      query: // value for 'query'
+ *   },
+ * });
+ */
+export function useSearchIssueQuery(baseOptions: Apollo.QueryHookOptions<SearchIssueQuery, SearchIssueQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchIssueQuery, SearchIssueQueryVariables>(SearchIssueDocument, options);
+      }
+export function useSearchIssueLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchIssueQuery, SearchIssueQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchIssueQuery, SearchIssueQueryVariables>(SearchIssueDocument, options);
+        }
+export type SearchIssueQueryHookResult = ReturnType<typeof useSearchIssueQuery>;
+export type SearchIssueLazyQueryHookResult = ReturnType<typeof useSearchIssueLazyQuery>;
+export type SearchIssueQueryResult = Apollo.QueryResult<SearchIssueQuery, SearchIssueQueryVariables>;

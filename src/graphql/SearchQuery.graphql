@@ -1,0 +1,14 @@
+query SearchIssue($query: String!) {
+  search(query: $query, type: ISSUE) {
+    issueCount
+    edges {
+      node {
+        __typename
+        ...IssueWithCommentsCount
+      }
+      textMatches {
+        property
+      }
+    }
+  }
+}

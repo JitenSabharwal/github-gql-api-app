@@ -1,13 +1,38 @@
-fragment Issue on Issue {
+fragment BasicIssueDetail on Issue {
+  id
   title
-  comments(first: $commentCount) {
+  body
+  state
+}
+
+fragment IssueWithCommentsCount on Issue {
+  ...BasicIssueDetail
+  comments(first: 10) {
     totalCount
+  }
+}
+
+fragment Comment on Comment {
+  bodyText
+  author {
+    login
+  }
+  createdAt
+  updatedAt
+}
+
+fragment Issue on Issue {
+  ...BasicIssueDetail
+  comments(after: $afterComment, first: 50) {
+    totalCount
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
     edges {
       node {
-        author {
-          login
-        }
-        createdAt
+        ...Comment
       }
     }
   }

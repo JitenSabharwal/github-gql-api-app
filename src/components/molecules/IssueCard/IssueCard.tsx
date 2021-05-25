@@ -59,6 +59,7 @@ export default function IssueCard({ issue, onShowMore }: Props) {
             href="#"
             onClick={(e) => {
               e.preventDefault()
+              e.stopPropagation()
               onShowMore(id)
             }}
           >

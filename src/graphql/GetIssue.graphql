@@ -1,0 +1,12 @@
+query GetIssue(
+  $owner: String!
+  $name: String!
+  $issueNumber: Int!
+  $afterComment: String
+) {
+  repository(owner: $owner, name: $name) {
+    issue(number: $issueNumber) {
+      ...Issue
+    }
+  }
+}

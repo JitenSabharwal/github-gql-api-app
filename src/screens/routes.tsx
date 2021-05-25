@@ -2,6 +2,7 @@ import React from "react"
 import Home from "./Home/Home"
 import Issue from "./Issue/Issue"
 import { BrowserRouter, Route, RouteProps, Switch } from "react-router-dom"
+import { IssueState, useGetRepository } from "../graphql"
 
 function useRoutes(): readonly RouteProps[] {
   const routes = [
