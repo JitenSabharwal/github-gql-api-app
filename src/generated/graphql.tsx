@@ -19751,7 +19751,23 @@ export type GetRepositoryQuery = (
 
 export type BasicIssueDetailFragment = (
   { __typename?: 'Issue' }
-  & Pick<Issue, 'id' | 'title' | 'body' | 'state'>
+  & Pick<Issue, 'id' | 'title' | 'body' | 'state' | 'number'>
+  & { author?: Maybe<(
+    { __typename?: 'Bot' }
+    & Pick<Bot, 'login'>
+  ) | (
+    { __typename?: 'EnterpriseUserAccount' }
+    & Pick<EnterpriseUserAccount, 'login'>
+  ) | (
+    { __typename?: 'Mannequin' }
+    & Pick<Mannequin, 'login'>
+  ) | (
+    { __typename?: 'Organization' }
+    & Pick<Organization, 'login'>
+  ) | (
+    { __typename?: 'User' }
+    & Pick<User, 'login'>
+  )> }
 );
 
 export type IssueWithCommentsCountFragment = (
@@ -19985,10 +20001,10 @@ export type SearchIssueQuery = (
     & Pick<SearchResultItemConnection, 'issueCount'>
     & { edges?: Maybe<Array<Maybe<(
       { __typename?: 'SearchResultItemEdge' }
-      & { node?: Maybe<{ __typename: 'App' } | (
-        { __typename: 'Issue' }
+      & { node?: Maybe<{ __typename?: 'App' } | (
+        { __typename?: 'Issue' }
         & IssueWithCommentsCountFragment
-      ) | { __typename: 'MarketplaceListing' } | { __typename: 'Organization' } | { __typename: 'PullRequest' } | { __typename: 'Repository' } | { __typename: 'User' }>, textMatches?: Maybe<Array<Maybe<(
+      ) | { __typename?: 'MarketplaceListing' } | { __typename?: 'Organization' } | { __typename?: 'PullRequest' } | { __typename?: 'Repository' } | { __typename?: 'User' }>, textMatches?: Maybe<Array<Maybe<(
         { __typename?: 'TextMatch' }
         & Pick<TextMatch, 'property'>
       )>>> }
@@ -20002,6 +20018,10 @@ export const BasicIssueDetailFragmentDoc = gql`
   title
   body
   state
+  number
+  author {
+    login
+  }
 }
     `;
 export const IssueWithCommentsCountFragmentDoc = gql`
@@ -20146,11 +20166,10 @@ export type GetRepositoryLazyQueryHookResult = ReturnType<typeof useGetRepositor
 export type GetRepositoryQueryResult = Apollo.QueryResult<GetRepositoryQuery, GetRepositoryQueryVariables>;
 export const SearchIssueDocument = gql`
     query SearchIssue($query: String!) {
-  search(query: $query, type: ISSUE) {
+  search(query: $query, type: ISSUE, first: 50) {
     issueCount
     edges {
       node {
-        __typename
         ...IssueWithCommentsCount
       }
       textMatches {

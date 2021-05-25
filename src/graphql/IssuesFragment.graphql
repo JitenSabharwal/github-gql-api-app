@@ -3,6 +3,10 @@ fragment BasicIssueDetail on Issue {
   title
   body
   state
+  number
+  author {
+    login
+  }
 }
 
 fragment IssueWithCommentsCount on Issue {

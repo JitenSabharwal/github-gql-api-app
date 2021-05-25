@@ -10,7 +10,7 @@ import {
 } from "reactstrap"
 
 export interface Issue {
-  id: string
+  id: number
   createdAt: Date
   title: string
   description: string
@@ -21,11 +21,12 @@ export interface Issue {
 
 type Props = {
   issue: Issue
-  onShowMore: (id: string) => void
+  onShowMore: (id: number) => void
 }
 
 const Root = styled.div`
-  max-width: 400px;
+  display: flex;
+  max-width: 300px;
   max-height: 500px;
   margin-top: 24px;
 `
@@ -63,7 +64,7 @@ export default function IssueCard({ issue, onShowMore }: Props) {
               onShowMore(id)
             }}
           >
-            Card Link
+            View in detail
           </CardLink>
         </CardBody>
       </Card>

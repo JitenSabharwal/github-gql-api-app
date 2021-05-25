@@ -6,28 +6,19 @@ import {
   IssueCard,
   Issue as IssueCardType,
 } from "../../components/molecules/IssueCard"
-import { IssueState, useGetRepository } from "../../graphql"
+import { IssueState, useGetRepository, useSearchIssue } from "../../graphql"
 import { useHistory } from "react-router-dom"
 import { GetRepositoryQueryVariables } from "../../generated/graphql"
 import styled from "styled-components"
 const CardWrapper = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
 `
 interface Issue {}
 type Props = {
   totalCount: number
   issues: Issue[]
-}
-
-const cardMockData: IssueCardType = {
-  id: "1",
-  createdAt: new Date(),
-  title: "Sample Issue",
-  description:
-    "This is just for testing purpose, This is just for testing purpose,This is just for testing purpose,This is just for testing purpose, This is just for testing purpose",
-  createdBy: "Jiten",
-  repository: "Sample Test",
-  commentCount: 15,
 }
 
 const data_ = {
@@ -40,9 +31,16 @@ export default function Home({ totalCount = 0 }: Props) {
   const [queries, setQueries] = useState<GetRepositoryQueryVariables[]>([
     { ...data_ },
   ])
+  const [search, setSearchText] = useState({
+    state: IssueState.Open,
+    repo: "facebook/react",
+    text: "",
+  })
   const [page, setPage] = useState(0)
-  const { loading, data, error } = useGetRepository(queries[page])
-  if (error) console.log(error)
+  const { loading, mappedData } = useGetRepository(queries[page])
+  const { loading: searchLoading, mappedData: searchResult } = useSearchIssue({
+    ...search,
+  })
   const history = useHistory()
   const fetchMore_ = (after?: string | undefined) => {
     const data__: GetRepositoryQueryVariables = { ...data_ }
@@ -59,41 +57,60 @@ export default function Home({ totalCount = 0 }: Props) {
     }
   }
 
-  const nextPage = useCallback(() => {
-    const hasNextPage = data?.repository?.issues.pageInfo.hasNextPage
+  const nextPage = () => {
+    const hasNextPage = mappedData?.repository?.issues.pageInfo.hasNextPage
     if (hasNextPage) {
       setPage(page + 1)
-      fetchMore_(data?.repository?.issues.pageInfo.endCursor ?? "")
+      fetchMore_(mappedData?.repository?.issues.pageInfo.endCursor ?? "")
     }
-  }, [data])
+  }
 
-  const prevPage = useCallback(() => {
+  const prevPage = () => {
     if (page > 0) setPage(page - 1)
-  }, [data])
-
+  }
+  const data = search.text ? searchResult?.issues : mappedData?.issues
+  const issueCount = search.text
+    ? searchResult?.totalCount
+    : mappedData?.totalCount
   return (
     <Layout>
-      <SearchBar />
-      <TotalCount
-        value={
-          (totalCount || data?.repository?.issues.totalCount) ?? totalCount
+      <SearchBar
+        onSubmit={(state: IssueState, text: string) =>
+          setSearchText({
+            ...search,
+            text,
+            state,
+          })
         }
+      />
+      <TotalCount
+        value={issueCount ?? totalCount}
         label={"Total number of found issues"}
       />
-      <button onClick={() => prevPage()}>Before</button>
-      <button onClick={() => nextPage()}>Next</button>
+      <button onClick={() => prevPage()} disabled={page === 0}>
+        Before
+      </button>
+
+      <button
+        onClick={() => nextPage()}
+        disabled={!mappedData?.repository?.issues.pageInfo.hasNextPage}
+      >
+        Next
+      </button>
       <CardWrapper>
         {!loading &&
           data &&
-          data.repository?.issues?.edges?.map((m) => (
-            <IssueCard
-              key={m?.node?.title}
-              issue={{ ...cardMockData, title: m?.node?.title ?? "" }}
-              onShowMore={() => {
-                history.push(`/issue/${m?.node?.id}`)
-              }}
-            />
-          ))}
+          data
+            .filter((m) => m)
+            .map((m: IssueCardType) => (
+              <IssueCard
+                key={m?.title}
+                issue={m}
+                onShowMore={(id) => {
+                  history.push(`/issue/${id}`)
+                }}
+              />
+            ))}
       </CardWrapper>
     </Layout>
   )

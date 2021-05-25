@@ -3,7 +3,7 @@ import React from "react"
 import { shallow } from "enzyme"
 
 const cardMockData: Issue = {
-  id: "1",
+  id: 1,
   createdAt: new Date(),
   title: "Sample Issue",
   description: "This is just for testing purpose",

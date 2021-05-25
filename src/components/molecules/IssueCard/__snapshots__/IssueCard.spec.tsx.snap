@@ -2,6 +2,39 @@
 
 exports[`Card Should render the layout 1`] = `
 Array [
-  <styled.div />,
+  <styled.div>
+    <Card
+      tag="div"
+    >
+      <CardBody
+        tag="div"
+      >
+        <CardTitle
+          tag="h5"
+        >
+          Sample Issue
+        </CardTitle>
+        <CardSubtitle
+          className="mb-2 text-muted"
+          tag="h6"
+        >
+          created by 
+          Jiten
+           for 
+          Sample Test
+        </CardSubtitle>
+        <styled.div>
+          This is just for testing purpose
+        </styled.div>
+        <CardLink
+          href="#"
+          onClick={[Function]}
+          tag="a"
+        >
+          Card Link
+        </CardLink>
+      </CardBody>
+    </Card>
+  </styled.div>,
 ]
 `;
