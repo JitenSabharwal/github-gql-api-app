@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import Layout from "../../components/organisms/Layout/Layout"
 import SearchBar from "../../components/atoms/SearchBar/SearchBar"
 import { TotalCount } from "./components/TotalCount"
@@ -6,9 +6,12 @@ import {
   IssueCard,
   Issue as IssueCardType,
 } from "../../components/molecules/IssueCard"
-import { IssueState, useGetRepository, useSearchIssue } from "../../graphql"
+import { useGetRepository, useSearchIssue } from "../../graphql"
 import { useHistory } from "react-router-dom"
-import { GetRepositoryQueryVariables } from "../../generated/graphql"
+import {
+  GetRepositoryQueryVariables,
+  IssueState,
+} from "../../generated/graphql"
 import styled from "styled-components"
 import { Loader } from "../../components/atoms/Loader"
 const CardWrapper = styled.div`
@@ -17,7 +20,7 @@ const CardWrapper = styled.div`
   justify-content: space-evenly;
 `
 const LoaderWrapper = styled.div`
-  margin-top: 30%;
+  margin-top: 10%;
 `
 interface Issue {}
 type Props = {
@@ -39,7 +42,6 @@ export default function Home({ totalCount = 0 }: Props) {
     repo: "facebook/react",
     text: "",
   })
-  console.log({ page })
   const { loading, mappedData } = useGetRepository(queries[page])
   const { loading: searchLoading, mappedData: searchResult } =
     useSearchIssue(search)
@@ -58,7 +60,6 @@ export default function Home({ totalCount = 0 }: Props) {
       }
     }
   }
-
   const nextPage = () => {
     const hasNextPage = mappedData?.repository?.issues.pageInfo.hasNextPage
     if (hasNextPage) {
@@ -70,7 +71,7 @@ export default function Home({ totalCount = 0 }: Props) {
   const prevPage = () => {
     if (page > 0) setPage(page - 1)
   }
-  const data = search.text ? searchResult?.issues : mappedData?.issues
+  const result = search.text ? searchResult?.issues : mappedData?.issues
   const issueCount = search.text
     ? searchResult?.totalCount
     : mappedData?.totalCount
@@ -113,8 +114,8 @@ export default function Home({ totalCount = 0 }: Props) {
 
           <CardWrapper>
             {!loading &&
-              data &&
-              data
+              result &&
+              result
                 .filter((m) => m)
                 .map((m: IssueCardType) => (
                   <IssueCard
