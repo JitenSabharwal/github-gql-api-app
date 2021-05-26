@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Content Should render the layout 1`] = `
+Array [
+  <styled.div>
+    <styled.div>
+      This is just for testing purpose
+    </styled.div>
+    <styled.div>
+      <styled.div>
+        <styled.span>
+          State: 
+        </styled.span>
+        <span>
+          OPEN
+        </span>
+      </styled.div>
+      <styled.div>
+        <styled.span>
+          Updated at: 
+        </styled.span>
+        <span>
+          Wed May 26 2021
+        </span>
+      </styled.div>
+      <styled.div>
+        <styled.span>
+          Created at: 
+        </styled.span>
+        <span>
+          Wed May 26 2021
+        </span>
+      </styled.div>
+    </styled.div>
+  </styled.div>,
+]
+`;
