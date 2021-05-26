@@ -8,14 +8,11 @@ import {
   SearchIssueQuery,
   useGetIssueQuery,
   GetIssueQuery,
+  IssueState,
 } from "../generated/graphql"
 import { useSafeQuery } from "./queryTypes"
 import { Issue as IssueCardType } from "../components/molecules/IssueCard"
 import { useParams } from "react-router-dom"
-export enum IssueState {
-  Open = "OPEN",
-  Closed = "CLOSED",
-}
 
 export const useGetRepository = ({
   owner,
@@ -118,6 +115,7 @@ interface MatchProps {
   owner: string
   name: string
 }
+
 export const useGetIssue = () => {
   const { id, owner, name } = useParams<MatchProps>()
   return useSafeQuery(useGetIssueQuery, {
@@ -129,6 +127,7 @@ export const useGetIssue = () => {
     ),
   })
 }
+
 export type IssueContent = {
   nameWithOwner: string
   issue: {
