@@ -38,7 +38,12 @@ fragment Issue on Issue {
     }
     edges {
       node {
-        ...Comment
+        bodyText
+        author {
+          login
+        }
+        createdAt
+        updatedAt
       }
     }
   }

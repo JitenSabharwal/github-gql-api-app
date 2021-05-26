@@ -60,19 +60,7 @@ export default function Issue() {
               )}
             </ConentData>
             <CommentWrapper>
-              {mappedData && (
-                <ContentInfo
-                  data={{
-                    createdAt: new Date(mappedData?.issue?.createdAt),
-                    updatedAt: new Date(mappedData?.issue?.updatedAt),
-                    title: mappedData?.issue?.title,
-                    body: mappedData?.issue?.body,
-                    author: mappedData?.issue?.author,
-                    state: mappedData?.issue?.state,
-                  }}
-                />
-              )}
-              {/* <Comments data={mappedData?.issue?.comments} /> */}
+              {mappedData && <Comments data={mappedData?.issue?.comments} />}
             </CommentWrapper>
           </Content>
         </>

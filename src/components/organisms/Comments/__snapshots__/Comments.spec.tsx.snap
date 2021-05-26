@@ -2,6 +2,12 @@
 
 exports[`Comments Should render the layout 1`] = `
 Array [
-  <styled.div />,
+  <styled.div>
+    <Unknown
+      cardHeight={100}
+      items={Array []}
+      mode="VERTICAL"
+    />
+  </styled.div>,
 ]
 `;

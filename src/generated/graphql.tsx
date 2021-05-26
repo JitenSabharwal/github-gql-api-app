@@ -12948,12 +12948,14 @@ export type RegenerateVerifiableDomainTokenPayload = {
 };
 
 /** A release contains the content for a release. */
-export type Release = Node & UniformResourceLocatable & {
+export type Release = Node & UniformResourceLocatable & Reactable & {
   __typename?: 'Release';
   /** The author of the release */
   author?: Maybe<User>;
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
+  /** Identifies the primary key from the database. */
+  databaseId?: Maybe<Scalars['Int']>;
   /** The description of the release. */
   description?: Maybe<Scalars['String']>;
   /** The description of this release rendered to HTML. */
@@ -12969,6 +12971,10 @@ export type Release = Node & UniformResourceLocatable & {
   name?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the release was created. */
   publishedAt?: Maybe<Scalars['DateTime']>;
+  /** A list of reactions grouped by content left on the subject. */
+  reactionGroups?: Maybe<Array<ReactionGroup>>;
+  /** A list of Reactions left on the Issue. */
+  reactions: ReactionConnection;
   /** List of releases assets which are dependent on this release. */
   releaseAssets: ReleaseAssetConnection;
   /** The repository that the release belongs to. */
@@ -12987,6 +12993,19 @@ export type Release = Node & UniformResourceLocatable & {
   updatedAt: Scalars['DateTime'];
   /** The HTTP URL for this issue */
   url: Scalars['URI'];
+  /** Can user react to this subject */
+  viewerCanReact: Scalars['Boolean'];
+};
+
+
+/** A release contains the content for a release. */
+export type ReleaseReactionsArgs = {
+  after?: Maybe<Scalars['String']>;
+  before?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  content?: Maybe<ReactionContent>;
+  orderBy?: Maybe<ReactionOrder>;
 };
 
 
@@ -19983,7 +20002,23 @@ export type IssueFragment = (
       { __typename?: 'IssueCommentEdge' }
       & { node?: Maybe<(
         { __typename?: 'IssueComment' }
-        & Comment_IssueComment_Fragment
+        & Pick<IssueComment, 'bodyText' | 'createdAt' | 'updatedAt'>
+        & { author?: Maybe<(
+          { __typename?: 'Bot' }
+          & Pick<Bot, 'login'>
+        ) | (
+          { __typename?: 'EnterpriseUserAccount' }
+          & Pick<EnterpriseUserAccount, 'login'>
+        ) | (
+          { __typename?: 'Mannequin' }
+          & Pick<Mannequin, 'login'>
+        ) | (
+          { __typename?: 'Organization' }
+          & Pick<Organization, 'login'>
+        ) | (
+          { __typename?: 'User' }
+          & Pick<User, 'login'>
+        )> }
       )> }
     )>>> }
   ) }
@@ -20057,13 +20092,17 @@ export const IssueFragmentDoc = gql`
     }
     edges {
       node {
-        ...Comment
+        bodyText
+        author {
+          login
+        }
+        createdAt
+        updatedAt
       }
     }
   }
 }
-    ${BasicIssueDetailFragmentDoc}
-${CommentFragmentDoc}`;
+    ${BasicIssueDetailFragmentDoc}`;
 export const GetIssueDocument = gql`
     query GetIssue($owner: String!, $name: String!, $issueNumber: Int!, $afterComment: String) {
   repository(owner: $owner, name: $name) {

@@ -9,6 +9,7 @@ import {
   useGetIssueQuery,
   GetIssueQuery,
   IssueState,
+  IssueCommentConnection,
 } from "../generated/graphql"
 import { useSafeQuery } from "./queryTypes"
 import { Issue as IssueCardType } from "../components/molecules/IssueCard"
@@ -127,7 +128,11 @@ export const useGetIssue = () => {
     ),
   })
 }
-
+type Comment = {
+  body: string
+  createdBy: string
+  createdAt: Date
+}
 export type IssueContent = {
   nameWithOwner: string
   issue: {
@@ -137,10 +142,12 @@ export type IssueContent = {
     body: string
     author: string
     state: IssueState
+    comments: Comment[]
   }
 }
 function mapIssue(d: GetIssueQuery): IssueContent {
   const { repository } = d
+  console.log(repository?.issue?.comments.edges)
   return {
     nameWithOwner: repository?.nameWithOwner ?? "",
     issue: {
@@ -150,6 +157,14 @@ function mapIssue(d: GetIssueQuery): IssueContent {
       body: repository?.issue?.body ?? "",
       author: repository?.issue?.author?.login ?? "",
       state: repository?.issue?.state ?? IssueState.Open,
+      comments:
+        repository?.issue?.comments.edges?.map((c) => {
+          return {
+            createdBy: c?.node?.author?.login ?? "",
+            createdAt: new Date(c?.node?.updatedAt),
+            body: c?.node?.bodyText ?? "",
+          }
+        }) ?? [],
     },
   }
 }
