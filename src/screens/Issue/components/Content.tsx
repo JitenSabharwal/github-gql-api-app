@@ -11,7 +11,8 @@ const InfoItem = styled.div`
 `
 const Label = styled.span`
   color: #777272;
-  font-size: 12px;
+  font-size: 13px;
+  line-height: 24px;
 `
 const Description = styled.div`
   margin-bottom: 24px;
@@ -31,6 +32,7 @@ type Props = {
 export default function Content({ data }: Props) {
   return (
     <Root>
+      <Label>Description: </Label>
       <Description>{data.body}</Description>
       <InfoWrapper>
         <InfoItem>

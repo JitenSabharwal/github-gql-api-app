@@ -147,7 +147,6 @@ export type IssueContent = {
 }
 function mapIssue(d: GetIssueQuery): IssueContent {
   const { repository } = d
-  console.log(repository?.issue?.comments.edges)
   return {
     nameWithOwner: repository?.nameWithOwner ?? "",
     issue: {

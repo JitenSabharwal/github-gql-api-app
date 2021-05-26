@@ -3,6 +3,9 @@
 exports[`Content Should render the layout 1`] = `
 Array [
   <styled.div>
+    <styled.span>
+      Description: 
+    </styled.span>
     <styled.div>
       This is just for testing purpose
     </styled.div>
