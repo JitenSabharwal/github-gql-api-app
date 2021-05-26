@@ -1,10 +1,23 @@
 import Issue from "./Issue"
 import React from "react"
 import { shallow } from "enzyme"
+import { BrowserRouter } from "react-router-dom"
 
 describe("Issue", () => {
-  it("should render a <div />", () => {
-    const container = shallow(<Issue />)
-    expect(container.find("div").length).toEqual(1)
+  let container: React.ReactElement
+  beforeAll(
+    () =>
+      (container = (
+        <BrowserRouter>
+          <Issue />
+        </BrowserRouter>
+      ))
+  )
+  it("Should render a <div />", () => {
+    const component = shallow(container)
+  })
+  it("Should render the layout", () => {
+    const component = shallow(container)
+    expect(component.getElements()).toMatchSnapshot()
   })
 })

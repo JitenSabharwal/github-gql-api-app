@@ -54,8 +54,18 @@ Array [
       <Input
         onChange={[Function]}
         type="text"
+        value=""
       />
     </InputGroup>
+    <Button
+      className="btn-info"
+      color="secondary"
+      onClick={[Function]}
+      tag="button"
+      variant="outline-info"
+    >
+      Search
+    </Button>
   </styled.div>,
 ]
 `;

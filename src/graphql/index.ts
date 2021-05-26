@@ -40,7 +40,7 @@ export const useGetRepository = ({
     memoMapper: useCallback(
       (d: GetRepositoryQuery | undefined): MapGetRepo | undefined =>
         d?.repository ? mapInitalLoad(d) : undefined,
-      [variables.after, variables.before]
+      []
     ),
   })
 }

@@ -10,10 +10,14 @@ import { IssueState, useGetRepository, useSearchIssue } from "../../graphql"
 import { useHistory } from "react-router-dom"
 import { GetRepositoryQueryVariables } from "../../generated/graphql"
 import styled from "styled-components"
+import { Loader } from "../../components/atoms/Loader"
 const CardWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
+`
+const LoaderWrapper = styled.div`
+  margin-top: 30%;
 `
 interface Issue {}
 type Props = {
@@ -28,19 +32,17 @@ const data_ = {
   states: IssueState.Open,
 }
 export default function Home({ totalCount = 0 }: Props) {
-  const [queries, setQueries] = useState<GetRepositoryQueryVariables[]>([
-    { ...data_ },
-  ])
+  const [page, setPage] = useState(0)
+  const [queries, setQueries] = useState<GetRepositoryQueryVariables[]>([data_])
   const [search, setSearchText] = useState({
     state: IssueState.Open,
     repo: "facebook/react",
     text: "",
   })
-  const [page, setPage] = useState(0)
+  console.log({ page })
   const { loading, mappedData } = useGetRepository(queries[page])
-  const { loading: searchLoading, mappedData: searchResult } = useSearchIssue({
-    ...search,
-  })
+  const { loading: searchLoading, mappedData: searchResult } =
+    useSearchIssue(search)
   const history = useHistory()
   const fetchMore_ = (after?: string | undefined) => {
     const data__: GetRepositoryQueryVariables = { ...data_ }
@@ -83,35 +85,49 @@ export default function Home({ totalCount = 0 }: Props) {
           })
         }
       />
-      <TotalCount
-        value={issueCount ?? totalCount}
-        label={"Total number of found issues"}
-      />
-      <button onClick={() => prevPage()} disabled={page === 0}>
-        Before
-      </button>
+      {loading || searchLoading ? (
+        <LoaderWrapper>
+          <Loader />
+        </LoaderWrapper>
+      ) : (
+        <>
+          <TotalCount
+            value={issueCount ?? totalCount}
+            label={"Total number of found issues"}
+          />
+          {search.text ? (
+            ""
+          ) : (
+            <>
+              <button onClick={() => prevPage()} disabled={page === 0}>
+                Before
+              </button>
+              <button
+                onClick={() => nextPage()}
+                disabled={!mappedData?.repository?.issues.pageInfo.hasNextPage}
+              >
+                Next
+              </button>
+            </>
+          )}
 
-      <button
-        onClick={() => nextPage()}
-        disabled={!mappedData?.repository?.issues.pageInfo.hasNextPage}
-      >
-        Next
-      </button>
-      <CardWrapper>
-        {!loading &&
-          data &&
-          data
-            .filter((m) => m)
-            .map((m: IssueCardType) => (
-              <IssueCard
-                key={m?.title}
-                issue={m}
-                onShowMore={(id) => {
-                  history.push(`/issue/${id}`)
-                }}
-              />
-            ))}
-      </CardWrapper>
+          <CardWrapper>
+            {!loading &&
+              data &&
+              data
+                .filter((m) => m)
+                .map((m: IssueCardType) => (
+                  <IssueCard
+                    key={m?.title}
+                    issue={m}
+                    onShowMore={(id) => {
+                      history.push(`/issue/${m.repository}/${id}`)
+                    }}
+                  />
+                ))}
+          </CardWrapper>
+        </>
+      )}
     </Layout>
   )
 }

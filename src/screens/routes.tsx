@@ -6,14 +6,14 @@ import { BrowserRouter, Route, RouteProps, Switch } from "react-router-dom"
 function useRoutes(): readonly RouteProps[] {
   const routes = [
     {
-      component: Issue,
-      exact: true,
-      path: "/issue/:owner/:name/:id",
-    },
-    {
       component: Home,
       exact: true,
       path: "/",
+    },
+    {
+      component: Issue,
+      exact: true,
+      path: "/issue/:owner/:name/:id",
     },
   ]
   return routes

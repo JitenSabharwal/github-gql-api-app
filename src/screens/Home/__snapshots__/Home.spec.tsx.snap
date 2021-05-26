@@ -2,12 +2,8 @@
 
 exports[`Home Should render the layout 1`] = `
 Array [
-  <Layout>
-    <SearchBar />
-    <TotalCount
-      label="Total number of found issues"
-      value={100}
-    />
-  </Layout>,
+  <Context.Consumer>
+    [Function]
+  </Context.Consumer>,
 ]
 `;

@@ -17,9 +17,6 @@ Array [
       <styled.div
         onClick={[Function]}
       >
-        <Icon
-          icon="logo.svg"
-        />
         <styled.span>
           Back to Search
         </styled.span>
