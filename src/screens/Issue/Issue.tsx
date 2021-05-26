@@ -1,11 +1,7 @@
 import React from "react"
 import { SearchBar } from "../../components/atoms/SearchBar"
 import Layout from "../../components/organisms/Layout/Layout"
-import {
-  GetIssueQueryResult,
-  IssueState,
-  useGetIssueQuery,
-} from "../../generated/graphql"
+import { GetIssueQueryResult } from "../../generated/graphql"
 import styled from "styled-components"
 import Comments from "../../components/organisms/Comments/Comments"
 import ContentInfo from "./components/Content"
