@@ -19709,6 +19709,7 @@ export type GetIssueQuery = (
   { __typename?: 'Query' }
   & { repository?: Maybe<(
     { __typename?: 'Repository' }
+    & Pick<Repository, 'nameWithOwner'>
     & { issue?: Maybe<(
       { __typename?: 'Issue' }
       & IssueFragment
@@ -19751,7 +19752,7 @@ export type GetRepositoryQuery = (
 
 export type BasicIssueDetailFragment = (
   { __typename?: 'Issue' }
-  & Pick<Issue, 'id' | 'title' | 'body' | 'state' | 'number'>
+  & Pick<Issue, 'id' | 'title' | 'body' | 'state' | 'number' | 'createdAt' | 'updatedAt'>
   & { author?: Maybe<(
     { __typename?: 'Bot' }
     & Pick<Bot, 'login'>
@@ -20019,6 +20020,8 @@ export const BasicIssueDetailFragmentDoc = gql`
   body
   state
   number
+  createdAt
+  updatedAt
   author {
     login
   }
@@ -20064,6 +20067,7 @@ ${CommentFragmentDoc}`;
 export const GetIssueDocument = gql`
     query GetIssue($owner: String!, $name: String!, $issueNumber: Int!, $afterComment: String) {
   repository(owner: $owner, name: $name) {
+    nameWithOwner
     issue(number: $issueNumber) {
       ...Issue
     }

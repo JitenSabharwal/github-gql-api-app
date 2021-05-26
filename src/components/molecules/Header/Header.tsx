@@ -19,11 +19,14 @@ const Heading = styled.div`
 const BackButton = styled.div`
   display: flex;
   justify-content: flex-start;
-  margin-right: 16px;
+  margin-left: 16px;
   line-height: 24px;
+  align-items: center;
+  cursor: pointer;
 `
 const ButtonText = styled.span`
   font-size: 13px;
+  width: max-content;
 `
 
 export default function Header({
@@ -38,7 +41,7 @@ export default function Header({
       {onBackClick && (
         <>
           <BackButton onClick={onBackClick}>
-            <Icon icon={Logo} />
+            {/* <Icon icon={Logo} /> */}
             <ButtonText>{"Back to Search"}</ButtonText>
           </BackButton>
         </>

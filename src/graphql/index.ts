@@ -6,9 +6,12 @@ import {
   SearchIssueQueryVariables,
   useSearchIssueQuery,
   SearchIssueQuery,
+  useGetIssueQuery,
+  GetIssueQuery,
 } from "../generated/graphql"
 import { useSafeQuery } from "./queryTypes"
 import { Issue as IssueCardType } from "../components/molecules/IssueCard"
+import { useParams } from "react-router-dom"
 export enum IssueState {
   Open = "OPEN",
   Closed = "CLOSED",
@@ -37,12 +40,12 @@ export const useGetRepository = ({
     memoMapper: useCallback(
       (d: GetRepositoryQuery | undefined): MapGetRepo | undefined =>
         d?.repository ? mapInitalLoad(d) : undefined,
-      []
+      [variables.after, variables.before]
     ),
   })
 }
 
-type MapGetRepo = {
+export type MapGetRepo = {
   repository: GetRepositoryQuery["repository"]
   issues: IssueCardType[]
   totalCount: number
@@ -108,5 +111,46 @@ function mapSearchResult(d: SearchIssueQuery, repo: string) {
   return {
     issues,
     totalCount: issues?.length,
+  }
+}
+interface MatchProps {
+  id: string
+  owner: string
+  name: string
+}
+export const useGetIssue = () => {
+  const { id, owner, name } = useParams<MatchProps>()
+  return useSafeQuery(useGetIssueQuery, {
+    variables: { issueNumber: +id, owner, name },
+    memoMapper: useCallback(
+      (d: GetIssueQuery | undefined) =>
+        d?.repository?.issue ? mapIssue(d) : undefined,
+      []
+    ),
+  })
+}
+export type IssueContent = {
+  nameWithOwner: string
+  issue: {
+    createdAt: string
+    updatedAt: string
+    title: string
+    body: string
+    author: string
+    state: IssueState
+  }
+}
+function mapIssue(d: GetIssueQuery): IssueContent {
+  const { repository } = d
+  return {
+    nameWithOwner: repository?.nameWithOwner ?? "",
+    issue: {
+      createdAt: repository?.issue?.createdAt,
+      updatedAt: repository?.issue?.updatedAt,
+      title: repository?.issue?.title ?? "",
+      body: repository?.issue?.body ?? "",
+      author: repository?.issue?.author?.login ?? "",
+      state: repository?.issue?.state ?? IssueState.Open,
+    },
   }
 }

@@ -1,2 +1,2 @@
 export const GRAPHQL_URL = "https://api.github.com/graphql"
-export const GRAPHQL_TOKEN = "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"
+export const GRAPHQL_TOKEN = "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"

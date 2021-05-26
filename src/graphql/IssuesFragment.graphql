@@ -4,6 +4,8 @@ fragment BasicIssueDetail on Issue {
   body
   state
   number
+  createdAt
+  updatedAt
   author {
     login
   }

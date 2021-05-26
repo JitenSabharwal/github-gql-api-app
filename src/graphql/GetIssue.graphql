@@ -5,6 +5,7 @@ query GetIssue(
   $afterComment: String
 ) {
   repository(owner: $owner, name: $name) {
+    nameWithOwner
     issue(number: $issueNumber) {
       ...Issue
     }
